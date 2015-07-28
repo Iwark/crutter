@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305113355) do
+ActiveRecord::Schema.define(version: 20150728144434) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "group_id",            limit: 4,                  null: false
@@ -61,8 +61,9 @@ ActiveRecord::Schema.define(version: 20150305113355) do
   create_table "follower_histories", force: :cascade do |t|
     t.integer  "account_id",      limit: 4
     t.string   "followers_count", limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "follower_ids",    limit: 255, default: ""
   end
 
   add_index "follower_histories", ["account_id"], name: "index_follower_histories_on_account_id", using: :btree
@@ -100,6 +101,12 @@ ActiveRecord::Schema.define(version: 20150305113355) do
   add_index "sent_messages", ["account_id"], name: "index_sent_messages_on_account_id", using: :btree
   add_index "sent_messages", ["direct_message_id"], name: "index_sent_messages_on_direct_message_id", using: :btree
   add_index "sent_messages", ["to_user_id"], name: "index_sent_messages_on_to_user_id", using: :btree
+
+  create_table "settings", force: :cascade do |t|
+    t.integer  "unfollow_after_minutes", limit: 4
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
 
   create_table "targets", force: :cascade do |t|
     t.string   "name",        limit: 255

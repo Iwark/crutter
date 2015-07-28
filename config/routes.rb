@@ -20,6 +20,8 @@ Rails.application.routes.draw do
     patch :change_order
   end
 
+  resources :settings, only: [:edit, :update]
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

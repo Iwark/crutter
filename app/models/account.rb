@@ -41,6 +41,11 @@ class Account < ActiveRecord::Base
     followerHistories = []
     Account.transaction do
       accounts.where(screen_name: users.map(&:screen_name)).each do |account|
+
+        follower_ids = Rails.cache.fetch("follower-#{account.id}", expires_in: 3.hours) do
+          account.get_follower_ids
+        end
+
         user = users.find &-> u { u.screen_name == account.screen_name }
         account.update(
           friends_count:   user.friends_count,
@@ -48,7 +53,8 @@ class Account < ActiveRecord::Base
           )
         followerHistories << FollowerHistory.new(
           account_id: account.id,
-          followers_count: user.followers_count
+          followers_count: user.followers_count,
+          follower_ids: follower_ids.to_a.join(',')
           )
       end
     end
@@ -157,9 +163,17 @@ class Account < ActiveRecord::Base
     # 古い順に解除していく
     oneside_ids = (friend_ids - follower_ids).reverse
 
+    unfollow_after_minutes = Rails.cache.fetch("unfollow-after-minutes", expires_in: 3.minutes) do
+      (Setting.first || Setting.create(unfollow_after_minutes: 2.days.to_i / 60)).unfollow_after_minutes
+    end
+    ago = unfollow_after_minute.minutes.ago
+
     # 2日以内にフォローした人を除く
-    followed_users = self.followed_users.where(FollowedUser.arel_table[:created_at].gt(2.days.ago)).pluck(:user_id)
-    oneside_ids = oneside_ids - followed_users
+    # followed_users = self.followed_users.where(FollowedUser.arel_table[:created_at].gt(ago)).pluck(:user_id)
+    history = self.follower_histories.where(FollowerHistory.arel_table[:created_at].gt(ago)).first
+    return if history.created_at > ago
+    past_follower_ids = history.follower_ids.to_s.split(',').map &:to_i
+    oneside_ids = oneside_ids & past_follower_ids
 
     unfollowed = []
     oneside_ids.each_with_index do |target, i|

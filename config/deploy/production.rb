@@ -1,6 +1,6 @@
-role :app, %w{crutter crutter2}
-role :web, %w{crutter crutter2}
-role :db,  %w{crutter crutter2}
+role :app, %w{crutter}
+role :web, %w{crutter}
+role :db,  %w{crutter}
 
 set :stage, :production
 set :rails_env, :production
