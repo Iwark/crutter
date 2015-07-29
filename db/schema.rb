@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150729000928) do
+ActiveRecord::Schema.define(version: 20150729045641) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "group_id",            limit: 4,                  null: false
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20150729000928) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.text     "follower_ids",    limit: 65535
+    t.text     "friend_ids",      limit: 65535
   end
 
   add_index "follower_histories", ["account_id"], name: "index_follower_histories_on_account_id", using: :btree

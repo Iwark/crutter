@@ -42,7 +42,7 @@ class Account < ActiveRecord::Base
     Account.transaction do
       accounts.where(screen_name: users.map(&:screen_name)).each do |account|
 
-        follower_ids = account.get_follower_ids
+        friend_ids = account.get_friend_ids
         user = users.find &-> u { u.screen_name == account.screen_name }
         account.update(
           friends_count:   user.friends_count,
@@ -51,7 +51,7 @@ class Account < ActiveRecord::Base
         followerHistories << FollowerHistory.new(
           account_id: account.id,
           followers_count: user.followers_count,
-          follower_ids: follower_ids.to_a.join(',')
+          friend_ids: friend_ids.to_a.join(',')
           )
       end
     end
@@ -169,8 +169,8 @@ class Account < ActiveRecord::Base
     # followed_users = self.followed_users.where(FollowedUser.arel_table[:created_at].gt(ago)).pluck(:user_id)
     history = self.follower_histories.where(FollowerHistory.arel_table[:created_at].gt(ago)).first
     return if history.created_at > ago
-    past_follower_ids = history.follower_ids.to_s.split(',').map &:to_i
-    oneside_ids = oneside_ids & past_follower_ids
+    past_friend_ids = history.friend_ids.to_s.split(',').map &:to_i
+    oneside_ids = oneside_ids & past_friend_ids
 
     unfollowed = []
     oneside_ids.each_with_index do |target, i|
