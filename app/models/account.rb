@@ -163,7 +163,7 @@ class Account < ActiveRecord::Base
     unfollow_after_minutes = Rails.cache.fetch("unfollow-after-minutes", expires_in: 3.minutes) do
       (Setting.first || Setting.create(unfollow_after_minutes: 2.days.to_i / 60)).unfollow_after_minutes
     end
-    ago = unfollow_after_minute.minutes.ago
+    ago = unfollow_after_minutes.minutes.ago
 
     # 2日以内にフォローした人を除く
     # followed_users = self.followed_users.where(FollowedUser.arel_table[:created_at].gt(ago)).pluck(:user_id)
