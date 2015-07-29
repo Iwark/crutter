@@ -46,7 +46,7 @@ class Account < ActiveRecord::Base
           account.get_follower_ids
         end
 
-        info_log(follower_ids.to_a.join(','))
+        account.info_log(follower_ids.to_a.join(','))
 
         user = users.find &-> u { u.screen_name == account.screen_name }
         account.update(
