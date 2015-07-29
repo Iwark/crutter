@@ -34,7 +34,7 @@ class Account < ActiveRecord::Base
   # @return [nil]
   def self.update_all_statuses
 
-    accounts     = Account.where(auto_update: true).select(:id, :screen_name)
+    accounts     = Account.where(auto_update: true)
     screen_names = accounts.pluck(:screen_name)
     users        = Account.last.get_users(screen_names)
 
@@ -42,12 +42,7 @@ class Account < ActiveRecord::Base
     Account.transaction do
       accounts.where(screen_name: users.map(&:screen_name)).each do |account|
 
-        follower_ids = Rails.cache.fetch("follower-#{account.id}", expires_in: 3.hours) do
-          account.get_follower_ids
-        end
-
-        account.info_log(follower_ids.to_a.join(','))
-
+        follower_ids = account.get_follower_ids
         user = users.find &-> u { u.screen_name == account.screen_name }
         account.update(
           friends_count:   user.friends_count,
