@@ -168,7 +168,7 @@ class Account < ActiveRecord::Base
     # 2日以内にフォローした人を除く
     # followed_users = self.followed_users.where(FollowedUser.arel_table[:created_at].gt(ago)).pluck(:user_id)
     history = self.follower_histories.where(FollowerHistory.arel_table[:created_at].gt(ago)).first
-    return if history.created_at > ago
+    return if !history || history.created_at > ago
     past_friend_ids = history.friend_ids.to_s.split(',').map &:to_i
     oneside_ids = oneside_ids & past_friend_ids
 
