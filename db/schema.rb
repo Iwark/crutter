@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150729045641) do
+ActiveRecord::Schema.define(version: 20150816052916) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "group_id",            limit: 4,                  null: false
@@ -104,9 +104,11 @@ ActiveRecord::Schema.define(version: 20150729045641) do
   add_index "sent_messages", ["to_user_id"], name: "index_sent_messages_on_to_user_id", using: :btree
 
   create_table "settings", force: :cascade do |t|
-    t.integer  "unfollow_after_minutes", limit: 4
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.integer  "unfollow_after_minutes",  limit: 4
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "twitter_consumer_key",    limit: 255
+    t.string   "twitter_consumer_secret", limit: 255
   end
 
   create_table "targets", force: :cascade do |t|

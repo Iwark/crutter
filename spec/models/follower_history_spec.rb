@@ -7,6 +7,8 @@
 #  followers_count :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  follower_ids    :text(65535)
+#  friend_ids      :text(65535)
 #
 
 require 'rails_helper'

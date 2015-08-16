@@ -1,5 +1,5 @@
 class SettingsController < ApplicationController
-  permits :unfollow_after_minutes
+  permits :unfollow_after_minutes, :twitter_consumer_key, :twitter_consumer_secret
 
   def edit(id)
     @setting = Setting.first || Setting.create(unfollow_after_minutes: 2.days.to_i / 60)
